@@ -23,13 +23,17 @@ void WiFi_Connection::getInfo() {
 }
 bool WiFi_Connection::foundSavedSSID() {
     pref.begin("wifi_config", true);
-    String savedSSID = pref.getString("ssid", "");
-    String savePassword = pref.getString("password", "");
+    String savedSSID = "", savedPassword = "";
+
+    if (pref.isKey("ssid"))
+        savedSSID = pref.getString("ssid", "");
+    if (pref.isKey("password"))
+        savedPassword = pref.getString("password", "");
     pref.end();
 
-    if (savedSSID != "") {
+    if (savedSSID != "" && savedPassword != "") {
         this->ssid = savedSSID;
-        this->password = savePassword;
+        this->password = savedPassword;
         return true;
     }
     return false;
@@ -44,16 +48,16 @@ void WiFi_Connection::connectionAttempt() {
         connectingTime += 1;
 
         if (connectingTime >= 30) {
-            Serial0.println("[WiFi] Connection timeout. Please retry");
+            Serial0.println("\n[WiFi] Connection timeout! Please check your input SSID and password again.");
             return;
         }
     }
-    Serial0.printf("\n[WiFi] Successfully connected to %s\n", this->ssid.c_str());
+    Serial0.printf("\n[WiFi] Successfully connected to %s.\n", this->ssid.c_str());
     saveSSID();
 }
 void WiFi_Connection::connect() {
     if (foundSavedSSID())
-        Serial0.printf("[WiFi] Found saved SSID: %s\n", this->ssid.c_str());
+        Serial0.printf("[WiFi] Found recently saved SSID: %s.\n", this->ssid.c_str());
     else
         getInfo();
 
@@ -61,7 +65,7 @@ void WiFi_Connection::connect() {
 }
 void WiFi_Connection::disconnect() {
     WiFi.disconnect();
-    Serial0.println("[WiFi] Disconnected");
+    Serial0.println("[WiFi] Disconnected.");
 }
 void WiFi_Connection::forget() {
     WiFi.disconnect(true, true);
@@ -70,7 +74,7 @@ void WiFi_Connection::forget() {
     pref.end();
     this->ssid = "";
     this->password = "";
-    Serial0.println("[WiFi] SSID was forgot");
+    Serial0.println("[WiFi] SSID was forgot.");
 }
 WiFi_Connection::WiFi_Connection() {
     this->ssid = "";
