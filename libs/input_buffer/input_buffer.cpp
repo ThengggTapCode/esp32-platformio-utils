@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "inputBuffer.h"
+#include "input_buffer.h"
 
 String inputBuffer(bool sensitiveInfo) {
     String bufferedInput = "";
