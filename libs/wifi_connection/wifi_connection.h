@@ -11,12 +11,13 @@ class WiFi_Connection {
 private:
     String ssid;
     String password;
+    uint8_t timeOutSecond;
     bool foundSavedSSID();
     void saveSSID();
     void getInfo();
     void connectionAttempt();
 public:
-    WiFi_Connection();
+    WiFi_Connection(uint8_t timeOutSecond);
     void connect();
     void disconnect();
     void forget();

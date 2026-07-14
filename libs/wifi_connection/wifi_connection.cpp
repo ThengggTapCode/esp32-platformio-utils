@@ -19,7 +19,7 @@ void WiFi_Connection::getInfo() {
     Serial0.print("[WiFi] Enter SSID: ");
     this->ssid = inputBuffer();
     Serial0.print("[WiFi] Enter password: ");
-    this->password = inputBuffer(true);
+    this->password = inputBuffer(false, true);
 }
 bool WiFi_Connection::foundSavedSSID() {
     pref.begin("wifi_config", true);
@@ -47,8 +47,8 @@ void WiFi_Connection::connectionAttempt() {
         Serial0.print(".");
         connectingTime += 1;
 
-        if (connectingTime >= 30) {
-            Serial0.println("\n[WiFi] Connection timeout! Please check your input SSID and password again.");
+        if (connectingTime >= this->timeOutSecond) {
+            Serial0.println("\n[WiFi] Connection timeout! Your SSID might be unavailable at the moment, or your input was incorrect.");
             return;
         }
     }
@@ -56,11 +56,26 @@ void WiFi_Connection::connectionAttempt() {
     saveSSID();
 }
 void WiFi_Connection::connect() {
-    if (foundSavedSSID())
+    if (foundSavedSSID()) {
         Serial0.printf("[WiFi] Found recently saved SSID: %s.\n", this->ssid.c_str());
-    else
-        getInfo();
+        while (true) {
+            Serial0.print("Proceed to connect? [Y/n] ");
+            String yn = inputBuffer(true, false);
+            yn.toLowerCase();
 
+            if (yn == "y" || yn == "") {
+                connectionAttempt();
+                if (isConnected())
+                    return;
+                break;
+            }
+            else if (yn == "n")
+                break;
+            else 
+                Serial0.println("\nPlease try again with a valid input");
+        }
+    }
+    getInfo();
     connectionAttempt();
 }
 void WiFi_Connection::disconnect() {
@@ -76,7 +91,8 @@ void WiFi_Connection::forget() {
     this->password = "";
     Serial0.println("[WiFi] SSID was forgot.");
 }
-WiFi_Connection::WiFi_Connection() {
+WiFi_Connection::WiFi_Connection(uint8_t timeOutSecond) {
     this->ssid = "";
     this->password = "";
+    this->timeOutSecond = timeOutSecond;
 }
