@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "input_buffer.h"
+#include "inputBuffer.h"
 
 String inputBuffer(bool sensitiveInfo) {
     String bufferedInput = "";
@@ -8,19 +8,15 @@ String inputBuffer(bool sensitiveInfo) {
             char ch = Serial0.read(); // save every single character in each iteration
             // when ch is the enter key
             if (ch == '\r' || ch == '\n') {
-                if (bufferedInput.length() > 0) {                
-                    Serial0.println();
-                    return bufferedInput;
-                }
+                Serial0.println();
+                return bufferedInput;
             }
             // when ch is the backspace key
             else if (ch == 8 || ch == 127) {
-                if (bufferedInput.length() > 0) {
-                    bufferedInput.remove(bufferedInput.length() - 1); // removes the last character
+                bufferedInput.remove(bufferedInput.length() - 1); // removes the last character
 
-                    // move cursor left by one character, then overwrites the character in that position with a space
-                    Serial0.print("\b \b");
-                }
+                // move cursor left by one character, then overwrites the character in that position with a space
+                Serial0.print("\b \b");
             }
             // when ch is other keys
             else {
