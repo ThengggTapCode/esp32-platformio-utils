@@ -12,7 +12,7 @@ String inputBuffer(bool allowBlankInput, bool sensitiveInfo) {
                 // return bufferedInput;
                 if (allowBlankInput || bufferedInput.length() > 0) {
                     Serial0.println();
-                    return.bufferedInput;
+                    return bufferedInput;
                 }
             }
             // when ch is the backspace key
