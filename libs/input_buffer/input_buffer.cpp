@@ -1,15 +1,19 @@
 #include <Arduino.h>
 #include "input_buffer.h"
 
-String inputBuffer(bool sensitiveInfo) {
+String inputBuffer(bool allowBlankInput, bool sensitiveInfo) {
     String bufferedInput = "";
     while (true) {
         if (Serial0.available() > 0) {
             char ch = Serial0.read(); // save every single character in each iteration
             // when ch is the enter key
             if (ch == '\r' || ch == '\n') {
-                Serial0.println();
-                return bufferedInput;
+                // Serial0.println();
+                // return bufferedInput;
+                if (allowBlankInput || bufferedInput.length() > 0) {
+                    Serial0.println();
+                    return.bufferedInput;
+                }
             }
             // when ch is the backspace key
             else if (ch == 8 || ch == 127) {
