@@ -4,14 +4,14 @@
 String inputBuffer(bool allowBlankInput, bool sensitiveInfo) {
     String bufferedInput = "";
     while (true) {
-        if (Serial0.available() > 0) {
-            char ch = Serial0.read(); // save every single character in each iteration
+        if (Serial.available() > 0) {
+            char ch = Serial.read(); // save every single character in each iteration
             // when ch is the enter key
             if (ch == '\r' || ch == '\n') {
-                // Serial0.println();
+                // Serial.println();
                 // return bufferedInput;
                 if (allowBlankInput || bufferedInput.length() > 0) {
-                    Serial0.println();
+                    Serial.println();
                     return bufferedInput;
                 }
             }
@@ -20,7 +20,7 @@ String inputBuffer(bool allowBlankInput, bool sensitiveInfo) {
                 bufferedInput.remove(bufferedInput.length() - 1); // removes the last character
 
                 // move cursor left by one character, then overwrites the character in that position with a space
-                Serial0.print("\b \b");
+                Serial.print("\b \b");
             }
             // when ch is other keys
             else {
@@ -28,7 +28,7 @@ String inputBuffer(bool allowBlankInput, bool sensitiveInfo) {
                 
                 // prints out '*' if the input is a sensitive information
                 char printChar = (sensitiveInfo) ? '*' : ch;
-                Serial0.print(printChar);
+                Serial.print(printChar);
             }
             delay(5);
         }

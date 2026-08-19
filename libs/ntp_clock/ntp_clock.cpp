@@ -9,7 +9,7 @@ WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, NTP_ADDRESS, NTP_OFFSET, NTP_INTERVAL);
 
 void NTPClock::clockUpdate() {
-    if (timeClient.update()) Serial0.println("[NTPClient] Update successful!");
+    if (timeClient.update()) Serial.println("[NTPClient] Update successful!");
     time_t epochTime = timeClient.getEpochTime();
     struct tm *ptm = gmtime((const time_t *)&epochTime);
     

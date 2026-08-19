@@ -15,9 +15,9 @@ void WiFi_Connection::saveSSID() {
     pref.end();
 }
 void WiFi_Connection::getInfo() {
-    Serial0.print("[WiFi] Enter SSID: ");
+    Serial.print("[WiFi] Enter SSID: ");
     this->ssid = inputBuffer();
-    Serial0.print("[WiFi] Enter password: ");
+    Serial.print("[WiFi] Enter password: ");
     this->password = inputBuffer(false, true);
 }
 bool WiFi_Connection::foundSavedSSID() {
@@ -38,27 +38,27 @@ bool WiFi_Connection::foundSavedSSID() {
     return false;
 }
 void WiFi_Connection::connectionAttempt() {
-    Serial0.printf("[WiFi] Connecting to %s", this->ssid.c_str());
+    Serial.printf("[WiFi] Connecting to %s", this->ssid.c_str());
     uint8_t connectingTime = 0;
     WiFi.begin(this->ssid.c_str(), this->password.c_str());
     while (WiFi.status() != WL_CONNECTED) {
         delay(1000);
-        Serial0.print(".");
+        Serial.print(".");
         connectingTime += 1;
 
         if (connectingTime >= this->timeOutSecond) {
-            Serial0.println("\n[WiFi] Connection timeout! Your SSID might be unavailable at the moment, or your input was incorrect.");
+            Serial.println("\n[WiFi] Connection timeout! Your SSID might be unavailable at the moment, or your input was incorrect.");
             return;
         }
     }
-    Serial0.printf("\n[WiFi] Successfully connected to %s.\n", this->ssid.c_str());
+    Serial.printf("\n[WiFi] Successfully connected to %s.\n", this->ssid.c_str());
     saveSSID();
 }
 void WiFi_Connection::connect() {
     if (foundSavedSSID()) {
-        Serial0.printf("[WiFi] Found recently saved SSID: %s.\n", this->ssid.c_str());
+        Serial.printf("[WiFi] Found recently saved SSID: %s.\n", this->ssid.c_str());
         while (true) {
-            Serial0.print("Proceed to connect? [Y/n] ");
+            Serial.print("Proceed to connect? [Y/n] ");
             String yn = inputBuffer(true, false);
             yn.toLowerCase();
 
@@ -71,7 +71,7 @@ void WiFi_Connection::connect() {
             else if (yn == "n")
                 break;
             else 
-                Serial0.println("\nPlease try again with a valid input");
+                Serial.println("\nPlease try again with a valid input");
         }
     }
     getInfo();
@@ -79,7 +79,7 @@ void WiFi_Connection::connect() {
 }
 void WiFi_Connection::disconnect() {
     WiFi.disconnect();
-    Serial0.println("[WiFi] Disconnected.");
+    Serial.println("[WiFi] Disconnected.");
 }
 void WiFi_Connection::forget() {
     WiFi.disconnect(true, true);
@@ -88,7 +88,7 @@ void WiFi_Connection::forget() {
     pref.end();
     this->ssid = "";
     this->password = "";
-    Serial0.println("[WiFi] SSID was forgot.");
+    Serial.println("[WiFi] SSID was forgot.");
 }
 WiFi_Connection::WiFi_Connection(uint8_t timeOutSecond) {
     this->ssid = "";
